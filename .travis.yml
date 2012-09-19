@@ -7,7 +7,7 @@ install:
   - pip install pybuilder
   - pyb install_dependencies
 
-script: "pyb analyze run_integration_tests --debug"
+script: "pyb package --debug"
 
 notifications:
   email:
