@@ -7,7 +7,7 @@ use_plugin('python.pydev')
 
 use_plugin('copy_resources')
 
-default_task = ['analyze', 'publish']
+default_task = 'publish'
 
 version = '1.1.1'
 summary = 'YADT - an Augmented Deployment Tool - The Broadcast Client Part'
