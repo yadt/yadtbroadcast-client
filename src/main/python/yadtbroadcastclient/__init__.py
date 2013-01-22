@@ -7,7 +7,7 @@ import yaml
 from twisted.internet import reactor
 
 from autobahn.wamp import WampClientFactory, WampClientProtocol
- 
+
 
 class WampBroadcaster(object):
     def __init__(self, host, port, target=None):
@@ -23,14 +23,20 @@ class WampBroadcaster(object):
 
     def connect(self):
         if self.client:
+            self.logger.debug('already connected to %s' % self.url)
             return
         broadcaster = self
         self.logger.debug('trying to connect to %s' % self.url)
+
         class BroadcastClientProtocol(WampClientProtocol):
             def onSessionOpen(self):
                 broadcaster.client = self
                 broadcaster.logger.info('connected to broadcast-server %s' % broadcaster.url)
                 broadcaster.onSessionOpen()
+
+            def connectionLost(self, reason):
+                broadcaster.logger.debug('Lost connection due to %s' % str(reason))
+                super(BroadcastClientProtocol, self).connectionLost(reason)
 
         self.factory = WampClientFactory(self.url)
         self.factory.protocol = BroadcastClientProtocol
@@ -46,7 +52,7 @@ class WampBroadcaster(object):
             handler()
 
     def onEvent(self, target, event):
-        pass
+        self.logger.debug('NOP - onEvent target=%s event=%s' % (target, event))
 
     # TODO: unify old and new send calls
     def sendFullUpdate(self, data):
@@ -58,6 +64,8 @@ class WampBroadcaster(object):
 
     # TODO: unify old and new send calls
     def _sendEvent(self, id, data):
+        self.logger.debug('Sending event %s' % id)
+
         if not self.client:
             key = 'not_connected_warning_sent'
             if not getattr(self, key, False):
