@@ -9,6 +9,7 @@ use_plugin('copy_resources')
 
 default_task = 'publish'
 
+name = 'yadtbroadcast-client'
 version = '1.1.1'
 summary = 'YADT - an Augmented Deployment Tool - The Broadcast Client Part'
 description = """Yet Another Deployment Tool - The Broadcast Client Part
@@ -44,3 +45,10 @@ def set_properties (project):
         'Topic :: System :: Systems Administration'
     ])
 
+@init(environments='teamcity')
+def set_properties_for_teamcity_builds (project):
+    import os
+    project.version = '%s-%s' % (project.version, os.environ.get('BUILD_NUMBER', 0))
+    project.default_task = ['install_build_dependencies', 'publish']
+    project.set_property('install_dependencies_index_url', os.environ.get('PYPIPROXY_URL'))
+    project.set_property('install_dependencies_use_mirrors', False)
