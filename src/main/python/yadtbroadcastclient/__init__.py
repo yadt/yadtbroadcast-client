@@ -36,7 +36,7 @@ class WampBroadcaster(object):
 
             def connectionLost(self, reason):
                 broadcaster.logger.debug('Lost connection due to %s' % str(reason))
-                super(BroadcastClientProtocol, self).connectionLost(reason)
+                WampBroadcaster.connectionLost(self, reason)
 
         self.factory = WampClientFactory(self.url)
         self.factory.protocol = BroadcastClientProtocol
