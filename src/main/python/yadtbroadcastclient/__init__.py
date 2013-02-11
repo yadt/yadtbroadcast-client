@@ -34,10 +34,6 @@ class WampBroadcaster(object):
                 broadcaster.logger.info('connected to broadcast-server %s' % broadcaster.url)
                 broadcaster.onSessionOpen()
 
-            def connectionLost(self, reason):
-                broadcaster.logger.debug('Lost connection due to %s' % str(reason))
-                WampClientProtocol.connectionLost(self, reason)
-
         self.factory = WampClientFactory(self.url)
         self.factory.protocol = BroadcastClientProtocol
         reactor.connectTCP(self.host, self.port, self.factory)
