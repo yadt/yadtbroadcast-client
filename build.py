@@ -4,13 +4,14 @@ use_plugin('python.core')
 use_plugin('python.install_dependencies')
 use_plugin('python.distutils')
 use_plugin('python.pydev')
+use_plugin('python.flake8')
 
 use_plugin('copy_resources')
 
 default_task = 'publish'
 
 name = 'yadtbroadcast-client'
-version = '1.1.1'
+version = '1.1.2'
 summary = 'YADT - an Augmented Deployment Tool - The Broadcast Client Part'
 description = """Yet Another Deployment Tool - The Broadcast Client Part
 - sends state information to a Yadt Broadcast Server instance
@@ -21,15 +22,13 @@ url     = 'http://github.com/yadt/yadtbroadcast-client'
 license = 'GNU GPL v3'
 
 @init
-def set_properties (project):
+def set_properties(project):
     project.depends_on('Twisted')
     project.depends_on('autobahn')
-    project.depends_on('PyYAML')
-    
+
     project.set_property('coverage_break_build', False)
     project.set_property('pychecker_break_build', False)
 
-    project.get_property('distutils_commands').append('bdist_rpm')    
     project.set_property('copy_resources_target', '$dir_dist')
     project.get_property('copy_resources_glob').append('setup.cfg')
     project.set_property('dir_dist_scripts', 'scripts')
@@ -51,5 +50,6 @@ def set_properties_for_teamcity_builds (project):
     import os
     project.version = '%s-%s' % (project.version, os.environ.get('BUILD_NUMBER', 0))
     project.default_task = ['install_build_dependencies', 'publish']
+    project.get_property('distutils_commands').append('bdist_rpm')
     project.set_property('install_dependencies_index_url', os.environ.get('PYPIPROXY_URL'))
     project.set_property('install_dependencies_use_mirrors', False)

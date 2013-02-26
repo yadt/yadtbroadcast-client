@@ -1,8 +1,6 @@
 from __future__ import absolute_import
 
-import os
 import logging
-import yaml
 
 from twisted.internet import reactor
 
@@ -74,9 +72,8 @@ class WampBroadcaster(object):
             'type': 'event',
             'id': id,
             'target': self.target,
-            'payload' : data
+            'payload': data
         })
-
 
     # TODO: unify old and new send calls
     def _check_connection(self):
@@ -115,6 +112,3 @@ class WampBroadcaster(object):
             'cmd': cmd,
             'args': args
         })
-
-
-
