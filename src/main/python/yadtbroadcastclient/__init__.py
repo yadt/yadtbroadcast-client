@@ -8,6 +8,8 @@ from autobahn.wamp import WampClientFactory, WampClientProtocol
 
 
 class WampBroadcaster(object):
+    HEARTBEAT_INTERVAL = 1
+
     def __init__(self, host, port, target=None):
         self.host = host
         self.port = port
@@ -44,6 +46,11 @@ class WampBroadcaster(object):
             self.client.subscribe(self.target, self.onEvent)
         for handler in self.on_session_open_handlers:
             handler()
+        reactor.callLater(WampBroadcaster.HEARTBEAT_INTERVAL, self._heartbeat)
+
+    def _heartbeat(self):
+        self._sendEvent('heartbeat', None)
+        reactor.callLater(WampBroadcaster.HEARTBEAT_INTERVAL, self._heartbeat)
 
     def onEvent(self, target, event):
         self.logger.debug('NOP - onEvent target=%s event=%s' % (target, event))
