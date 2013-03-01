@@ -8,7 +8,7 @@ from autobahn.wamp import WampClientFactory, WampClientProtocol
 
 
 class WampBroadcaster(object):
-    HEARTBEAT_INTERVAL = 1
+    HEARTBEAT_INTERVAL = 120
 
     def __init__(self, host, port, target=None):
         self.host = host
