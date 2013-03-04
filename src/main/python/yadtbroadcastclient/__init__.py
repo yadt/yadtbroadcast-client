@@ -64,7 +64,7 @@ class WampBroadcaster(object):
         return self._sendEvent('service-change', data)
 
     # TODO: unify old and new send calls
-    def _sendEvent(self, id, data):
+    def _sendEvent(self, id, data, event_id=None):
         self.logger.debug('Sending event %s' % id)
 
         if not self.client:
@@ -78,6 +78,7 @@ class WampBroadcaster(object):
         self.client.publish(self.target, {
             'type': 'event',
             'id': id,
+            'event_id': event_id,
             'target': self.target,
             'payload': data
         })
@@ -94,12 +95,13 @@ class WampBroadcaster(object):
         return True
 
     # TODO: unify old and new send calls
-    def publish_cmd_for_target(self, target, cmd, state, message=None):
+    def publish_cmd_for_target(self, target, cmd, state, message=None, event_id=None):
         if not self._check_connection():
             return
         self.client.publish(target, {
             'type': 'event',
             'id': 'cmd',
+            'event_id': event_id,
             'cmd': cmd,
             'state': state,
             'message': message
@@ -110,12 +112,13 @@ class WampBroadcaster(object):
         return self.publish_cmd_for_target(self.target, cmd, state, message)
 
     # TODO: unify old and new send calls
-    def publish_request_for_target(self, target, cmd, args):
+    def publish_request_for_target(self, target, cmd, args, event_id=None):
         if not self._check_connection():
             return
         self.client.publish(target, {
             'type': 'event',
             'id': 'request',
+            'event_id': event_id,
             'cmd': cmd,
             'args': args
         })
