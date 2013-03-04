@@ -11,7 +11,7 @@ use_plugin('copy_resources')
 default_task = 'publish'
 
 name = 'yadtbroadcast-client'
-version = '1.1.3'
+version = '1.1.4'
 summary = 'YADT - an Augmented Deployment Tool - The Broadcast Client Part'
 description = """Yet Another Deployment Tool - The Broadcast Client Part
 - sends state information to a Yadt Broadcast Server instance

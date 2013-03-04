@@ -10,16 +10,20 @@ from autobahn.wamp import WampClientFactory, WampClientProtocol
 class WampBroadcaster(object):
     HEARTBEAT_INTERVAL = 120
 
-    def __init__(self, host, port, target=None):
+    def __init__(self, host, port, target=None, event_id=None):
         self.host = host
         self.port = port
         self.target = target
+        self.event_id = event_id
         self.url = 'ws://%s:%s/' % (self.host, self.port)
         self.factory = None
         self.client = None
         self.logger = logging.getLogger('broadcaster')
         self.logger.info('using %s for publishing' % self.url)
         self.on_session_open_handlers = []
+
+    def set_event_id(self, event_id):
+        self.event_id = event_id
 
     def connect(self):
         if self.client:
@@ -79,6 +83,7 @@ class WampBroadcaster(object):
             'type': 'event',
             'id': id,
             'target': self.target,
+            'event_id': self.event_id,
             'payload': data
         })
 
@@ -100,7 +105,7 @@ class WampBroadcaster(object):
         self.client.publish(target, {
             'type': 'event',
             'id': 'cmd',
-            'cmd': cmd,
+            'event_id': self.event_id,
             'state': state,
             'message': message
         })
@@ -116,6 +121,7 @@ class WampBroadcaster(object):
         self.client.publish(target, {
             'type': 'event',
             'id': 'request',
+            'event_id': self.event_id,
             'cmd': cmd,
             'args': args
         })
