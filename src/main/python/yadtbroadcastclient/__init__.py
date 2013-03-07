@@ -56,12 +56,12 @@ class WampBroadcaster(object):
         self.logger.debug('NOP - onEvent target=%s event=%s' % (target, event))
 
     # TODO: unify old and new send calls
-    def sendFullUpdate(self, data):
-        return self._sendEvent('full-update', data)
+    def sendFullUpdate(self, data, tracking_id=None):
+        return self._sendEvent('full-update', data, tracking_id)
 
     # TODO: unify old and new send calls
-    def sendServiceChange(self, data):
-        return self._sendEvent('service-change', data)
+    def sendServiceChange(self, data, tracking_id=None):
+        return self._sendEvent('service-change', data, tracking_id)
 
     # TODO: unify old and new send calls
     def _sendEvent(self, id, data, tracking_id=None):
