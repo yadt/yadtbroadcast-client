@@ -29,3 +29,19 @@ class YadtBroadcastClientTests(unittest.TestCase):
 
         actual_call = mock_broadcaster.publish_cmd_for_target.call_args
         self.assertEqual(call('target', 'command', 'state', 'message', 'tracking-id'), actual_call)
+
+    def test_sendEvent_should_publish_expected_event(self):
+        mock_broadcaster = Mock(WampBroadcaster)
+        mock_broadcaster.target = 'target'
+        mock_broadcaster.logger = Mock()
+        mock_broadcaster.client = Mock()
+
+        WampBroadcaster._sendEvent(mock_broadcaster, 'event-id', 'event-data', tracking_id='tracking-id')
+
+        actual_call = mock_broadcaster.client.publish.call_args
+        self.assertEqual(call('target', {'payload': 'event-data',
+                                         'type': 'event',
+                                         'id': 'event-id',
+                                         'tracking_id': 'tracking-id',
+                                         'target': 'target'}
+                              ), actual_call)
