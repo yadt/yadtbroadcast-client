@@ -21,7 +21,6 @@ class YadtBroadcastClientTests(unittest.TestCase):
 
         self.assertEqual(call('service-change', 'data', 'tracking-id'), mock_broadcaster._sendEvent.call_args)
 
-
     def test_publish_cmd_should_forward_tracking_id_to_publish_cmd_for_target(self):
         mock_broadcaster = Mock(WampBroadcaster)
         mock_broadcaster.target = 'target'
