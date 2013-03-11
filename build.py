@@ -6,6 +6,8 @@ use_plugin('python.distutils')
 use_plugin('python.pydev')
 use_plugin('python.flake8')
 
+use_plugin('python.unittest')
+
 use_plugin('copy_resources')
 
 default_task = 'publish'
@@ -23,6 +25,8 @@ license = 'GNU GPL v3'
 
 @init
 def set_properties(project):
+    project.build_depends_on('mock')
+
     project.depends_on('Twisted')
     project.depends_on('autobahn')
 
