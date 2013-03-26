@@ -18,7 +18,7 @@ class WampBroadcaster(object):
         self.factory = None
         self.client = None
         self.logger = logging.getLogger('broadcaster')
-        self.logger.info('using %s for publishing' % self.url)
+        self.logger.info('going to use %s for publishing' % self.url)
         self.on_session_open_handlers = []
 
     def connect(self):
