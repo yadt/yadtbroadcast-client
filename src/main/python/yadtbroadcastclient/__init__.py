@@ -55,15 +55,12 @@ class WampBroadcaster(object):
     def onEvent(self, target, event):
         self.logger.debug('NOP - onEvent target=%s event=%s' % (target, event))
 
-    # TODO: unify old and new send calls
     def sendFullUpdate(self, data, tracking_id=None):
         return self._sendEvent('full-update', data, tracking_id)
 
-    # TODO: unify old and new send calls
     def sendServiceChange(self, data, tracking_id=None):
         return self._sendEvent('service-change', data, tracking_id)
 
-    # TODO: unify old and new send calls
     def _sendEvent(self, id, data, tracking_id=None, target=None):
         if not target:
             target = self.target
@@ -80,7 +77,6 @@ class WampBroadcaster(object):
             'payload': data
         })
 
-    # TODO: unify old and new send calls
     def _check_connection(self):
         if not self.client:
             key = 'not_connected_warning_sent'

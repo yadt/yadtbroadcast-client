@@ -7,6 +7,24 @@ from yadtbroadcastclient import WampBroadcaster
 
 class YadtBroadcastClientTests(unittest.TestCase):
 
+    def test_publish_cmd_for_target_should_publish_expected_event(self):
+        mock_broadcaster = Mock(WampBroadcaster)
+        mock_broadcaster.client = Mock()
+
+        WampBroadcaster.publish_cmd_for_target(mock_broadcaster,
+                                               'target', 'some-cmd', 'destroyed',
+                                               'hello', 'nsa-tracker')
+
+        mock_broadcaster.client.publish.assert_called_with('target',
+                                                           {
+                                                               'cmd': 'some-cmd',
+                                                               'state': 'destroyed',
+                                                               'tracking_id': 'nsa-tracker',
+                                                               'message': 'hello',
+                                                               'type': 'event',
+                                                               'id': 'cmd'
+                                                           })
+
     def test_sendFullUpdate_should_forward_tracking_id_to_sendEvent(self):
         mock_broadcaster = Mock(WampBroadcaster)
 
