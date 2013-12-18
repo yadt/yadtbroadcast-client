@@ -7,6 +7,25 @@ from yadtbroadcastclient import WampBroadcaster
 
 class YadtBroadcastClientTests(unittest.TestCase):
 
+    def test_should_publish_request_for_target(self):
+
+        ybc = WampBroadcaster('host', 42)
+        ybc.target = 'broadcaster-target'
+        ybc.logger = Mock()
+        ybc.client = Mock()
+
+        ybc.publish_request_for_target('target', 'cmd', 'args', 'nsa-tracker')
+
+        ybc.client.publish.assert_called_with('target',
+                                              {
+                                                  'args': 'args',
+                                                  'cmd': 'cmd',
+                                                  'type': 'event',
+                                                  'id': 'request',
+                                                  'payload': None,
+                                                  'target': 'target',
+                                                  'tracking_id': 'nsa-tracker'})
+
     def test_should_publish_cmd_for_default_target(self):
         ybc = WampBroadcaster('host', 42)
         ybc.target = 'broadcaster-target'
