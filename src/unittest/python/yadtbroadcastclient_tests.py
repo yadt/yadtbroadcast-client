@@ -1,29 +1,11 @@
 import unittest
 
-from mock import Mock, call
+from mock import Mock, call, patch
 
 from yadtbroadcastclient import WampBroadcaster
 
 
 class YadtBroadcastClientTests(unittest.TestCase):
-
-    def test_publish_cmd_for_target_should_publish_expected_event(self):
-        mock_broadcaster = Mock(WampBroadcaster)
-        mock_broadcaster.client = Mock()
-
-        WampBroadcaster.publish_cmd_for_target(mock_broadcaster,
-                                               'target', 'some-cmd', 'destroyed',
-                                               'hello', 'nsa-tracker')
-
-        mock_broadcaster.client.publish.assert_called_with('target',
-                                                           {
-                                                               'cmd': 'some-cmd',
-                                                               'state': 'destroyed',
-                                                               'tracking_id': 'nsa-tracker',
-                                                               'message': 'hello',
-                                                               'type': 'event',
-                                                               'id': 'cmd'
-                                                           })
 
     def test_sendFullUpdate_should_forward_tracking_id_to_sendEvent(self):
         mock_broadcaster = Mock(WampBroadcaster)
@@ -90,6 +72,38 @@ class YadtBroadcastClientTests(unittest.TestCase):
                                          'tracking_id': 'tracking-id',
                                          'target': 'target'}
                               ), actual_call)
+
+    @patch('yadtbroadcastclient.WampBroadcaster._check_connection')
+    def test_sendEvent_should_drop_data_when_no_connection(self, check_connection):
+        check_connection.return_value = False
+        ybc = WampBroadcaster('host', 42)
+        ybc.target = 'broadcaster-target'
+        ybc.logger = Mock()
+        ybc.client = Mock()
+
+        WampBroadcaster._sendEvent(ybc,
+                                   'event-id',
+                                   'event-data',
+                                   tracking_id='tracking-id',
+                                   target='target')
+
+        self.assertFalse(ybc.client.publish.called)
+
+    @patch('yadtbroadcastclient.WampBroadcaster._check_connection')
+    def test_sendEvent_should_not_drop_data_when_connection(self, check_connection):
+        check_connection.return_value = True
+        ybc = WampBroadcaster('host', 42)
+        ybc.target = 'broadcaster-target'
+        ybc.logger = Mock()
+        ybc.client = Mock()
+
+        WampBroadcaster._sendEvent(ybc,
+                                   'event-id',
+                                   'event-data',
+                                   tracking_id='tracking-id',
+                                   target='target')
+
+        self.assertTrue(ybc.client.publish.called)
 
 
 class ConnectionCheckTests(unittest.TestCase):
