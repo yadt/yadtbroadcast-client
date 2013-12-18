@@ -67,16 +67,11 @@ class WampBroadcaster(object):
     def _sendEvent(self, id, data, tracking_id=None, target=None):
         if not target:
             target = self.target
-        self.logger.debug('Sending event %s on target %r' % (id, target))
+        self.logger.debug('Going to send event %s on target %r' % (id, target))
 
-        if not self.client:
-            key = 'not_connected_warning_sent'
-            if not getattr(self, key, False):
-                setattr(self, key, True)
-                self.logger.warning('could not connect to broadcaster %s' % self.url)
-
-            self.logger.debug('not connected, dropping data: %s' % data)
+        if not self._check_connection():
             return
+
         self.client.publish(target, {
             'type': 'event',
             'id': id,
