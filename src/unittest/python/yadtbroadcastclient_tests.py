@@ -73,6 +73,30 @@ class YadtBroadcastClientTests(unittest.TestCase):
                                          'target': 'target'}
                               ), actual_call)
 
+    def test_sendEvent_should_use_kwargs_as_event_items(self):
+        mock_broadcaster = Mock(WampBroadcaster)
+        mock_broadcaster.target = 'broadcaster-target'
+        mock_broadcaster.logger = Mock()
+        mock_broadcaster.client = Mock()
+
+        WampBroadcaster._sendEvent(mock_broadcaster,
+                                   'event-id',
+                                   'event-data',
+                                   tracking_id='tracking-id',
+                                   target='target',
+                                   state='foobar',
+                                   bar='baz')
+
+        actual_call = mock_broadcaster.client.publish.call_args
+        self.assertEqual(call('target', {'payload': 'event-data',
+                                         'type': 'event',
+                                         'id': 'event-id',
+                                         'tracking_id': 'tracking-id',
+                                         'target': 'target',
+                                         'state': 'foobar',
+                                         'bar': 'baz'}
+                              ), actual_call)
+
     @patch('yadtbroadcastclient.WampBroadcaster._check_connection')
     def test_sendEvent_should_drop_data_when_no_connection(self, check_connection):
         check_connection.return_value = False

@@ -29,9 +29,11 @@ class WampBroadcaster(object):
         self.logger.debug('trying to connect to %s' % self.url)
 
         class BroadcastClientProtocol(WampClientProtocol):
+
             def onSessionOpen(self):
                 broadcaster.client = self
-                broadcaster.logger.info('connected to broadcast-server %s' % broadcaster.url)
+                broadcaster.logger.info(
+                    'connected to broadcast-server %s' % broadcaster.url)
                 broadcaster.onSessionOpen()
 
         self.factory = WampClientFactory(self.url)
@@ -61,7 +63,7 @@ class WampBroadcaster(object):
     def sendServiceChange(self, data, tracking_id=None):
         return self._sendEvent('service-change', data, tracking_id)
 
-    def _sendEvent(self, id, data, tracking_id=None, target=None):
+    def _sendEvent(self, id, data, tracking_id=None, target=None, **kwargs):
         if not target:
             target = self.target
         self.logger.debug('Going to send event %s on target %r' % (id, target))
@@ -69,20 +71,25 @@ class WampBroadcaster(object):
         if not self._check_connection():
             return
 
-        self.client.publish(target, {
+        event = {
             'type': 'event',
             'id': id,
             'tracking_id': tracking_id,
             'target': target,
             'payload': data
-        })
+        }
+        for kwarg_key, kwarg_val in kwargs.iteritems():
+            event[kwarg_key] = kwarg_val
+
+        self.client.publish(target, event)
 
     def _check_connection(self):
         if not self.client:
             key = 'not_connected_warning_sent'
             if not getattr(self, key, False):
                 setattr(self, key, True)
-                self.logger.warning('could not connect to broadcaster %s' % self.url)
+                self.logger.warning(
+                    'could not connect to broadcaster %s' % self.url)
             self.logger.debug('not connected, dropping data...')
             return False
         return True
@@ -91,6 +98,7 @@ class WampBroadcaster(object):
     def publish_cmd_for_target(self, target, cmd, state, message=None, tracking_id=None):
         if not self._check_connection():
             return
+
         self.client.publish(target, {
             'type': 'event',
             'id': 'cmd',
