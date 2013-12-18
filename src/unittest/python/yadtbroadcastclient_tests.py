@@ -53,7 +53,7 @@ class YadtBroadcastClientTests(unittest.TestCase):
                                          'target': 'target'}
                               ), actual_call)
 
-    def test_send_event_on_target_should_publish_expected_event(self):
+    def test_sendEvent_on_target_should_publish_expected_event(self):
         mock_broadcaster = Mock(WampBroadcaster)
         mock_broadcaster.target = 'broadcaster-target'
         mock_broadcaster.logger = Mock()
@@ -72,3 +72,24 @@ class YadtBroadcastClientTests(unittest.TestCase):
                                          'tracking_id': 'tracking-id',
                                          'target': 'target'}
                               ), actual_call)
+
+
+class ConnectionCheckTests(unittest.TestCase):
+
+    def test_check_connection_should_return_false_when_link_is_down(self):
+        mock_broadcaster = Mock(WampBroadcaster)
+        mock_broadcaster.logger = Mock()
+        mock_broadcaster.url = "ws://broadcaster"
+        mock_broadcaster.client = None
+
+        self.assertEqual(WampBroadcaster._check_connection(mock_broadcaster), False)
+        self.assertTrue(hasattr(mock_broadcaster, "not_connected_warning_sent"))
+
+    def test_check_connection_should_return_true_when_link_is_up(self):
+        mock_broadcaster = Mock(WampBroadcaster)
+        mock_broadcaster.logger = Mock()
+        mock_broadcaster.url = "ws://broadcaster"
+        mock_broadcaster.client = Mock()
+
+        self.assertEqual(WampBroadcaster._check_connection(mock_broadcaster), True)
+        self.assertFalse(hasattr(mock_broadcaster, "not_connected_warning_sent"))
