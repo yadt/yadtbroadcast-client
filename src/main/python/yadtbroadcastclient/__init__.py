@@ -103,9 +103,14 @@ class WampBroadcaster(object):
                         state=state,
                         message=message)
 
-    # TODO: unify old and new send calls
     def publish_cmd(self, cmd, state, message=None, tracking_id=None):
-        return self.publish_cmd_for_target(self.target, cmd, state, message, tracking_id)
+        self._sendEvent(id='cmd',
+                        data=None,
+                        tracking_id=tracking_id,
+                        target=self.target,
+                        cmd=cmd,
+                        state=state,
+                        message=message)
 
     # TODO: unify old and new send calls
     def publish_request_for_target(self, target, cmd, args, tracking_id=None):

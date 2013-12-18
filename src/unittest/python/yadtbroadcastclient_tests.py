@@ -7,6 +7,24 @@ from yadtbroadcastclient import WampBroadcaster
 
 class YadtBroadcastClientTests(unittest.TestCase):
 
+    def test_should_publish_cmd_for_default_target(self):
+        ybc = WampBroadcaster('host', 42)
+        ybc.target = 'broadcaster-target'
+        ybc.logger = Mock()
+        ybc.client = Mock()
+
+        ybc.publish_cmd('status', 'failed', 'hello', 'nsa-tracking')
+
+        ybc.client.publish.assert_called_with('broadcaster-target', {
+            'cmd': 'status',
+            'state': 'failed',
+            'payload': None,
+            'tracking_id': 'nsa-tracking',
+            'message': 'hello',
+            'type': 'event',
+            'target': 'broadcaster-target',
+            'id': 'cmd'})
+
     def test_should_publish_cmd_for_target(self):
         ybc = WampBroadcaster('host', 42)
         ybc.target = 'broadcaster-target'
@@ -43,17 +61,6 @@ class YadtBroadcastClientTests(unittest.TestCase):
 
         self.assertEqual(
             call('service-change', 'data', 'tracking-id'), mock_broadcaster._sendEvent.call_args)
-
-    def test_publish_cmd_should_forward_tracking_id_to_publish_cmd_for_target(self):
-        mock_broadcaster = Mock(WampBroadcaster)
-        mock_broadcaster.target = 'target'
-
-        WampBroadcaster.publish_cmd(
-            mock_broadcaster, 'command', 'state', message='message', tracking_id='tracking-id')
-
-        actual_call = mock_broadcaster.publish_cmd_for_target.call_args
-        self.assertEqual(
-            call('target', 'command', 'state', 'message', 'tracking-id'), actual_call)
 
     def test_sendEvent_should_publish_expected_event_on_default_target(self):
         mock_broadcaster = Mock(WampBroadcaster)
