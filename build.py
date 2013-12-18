@@ -32,7 +32,6 @@ def set_properties(project):
     project.depends_on('autobahn')
 
     project.set_property('coverage_break_build', False)
-    project.set_property('pychecker_break_build', False)
 
     project.set_property('copy_resources_target', '$dir_dist')
     project.get_property('copy_resources_glob').append('setup.cfg')
