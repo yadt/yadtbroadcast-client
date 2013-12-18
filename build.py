@@ -12,13 +12,15 @@ use_plugin('copy_resources')
 default_task = ['analyze', 'publish']
 
 name = 'yadtbroadcast-client'
-version = '1.1.4'
+version = '1.2.0'
 summary = 'YADT - an Augmented Deployment Tool - The Broadcast Client Part'
 description = """Yet Another Deployment Tool - The Broadcast Client Part
 - sends state information to a Yadt Broadcast Server instance
 - sends information on start/stop/status/update
 """
-authors = [Author('Arne Hilmann', 'arne.hilmann@gmail.com')]
+authors = [Author('Arne Hilmann', 'arne.hilmann@gmail.com'),
+           Author('Maximilien Riehl', 'max@riehl.io'),
+           Author('Marcel Wolf', 'marcel.wolf@immobilienscout24.de')]
 url = 'http://github.com/yadt/yadtbroadcast-client'
 license = 'GNU GPL v3'
 
