@@ -64,8 +64,10 @@ class WampBroadcaster(object):
         return self._sendEvent('service-change', data, tracking_id)
 
     # TODO: unify old and new send calls
-    def _sendEvent(self, id, data, tracking_id=None):
-        self.logger.debug('Sending event %s' % id)
+    def _sendEvent(self, id, data, tracking_id=None, target=None):
+        if not target:
+            target = self.target
+        self.logger.debug('Sending event %s on target %r' % (id, target))
 
         if not self.client:
             key = 'not_connected_warning_sent'
@@ -75,11 +77,11 @@ class WampBroadcaster(object):
 
             self.logger.debug('not connected, dropping data: %s' % data)
             return
-        self.client.publish(self.target, {
+        self.client.publish(target, {
             'type': 'event',
             'id': id,
             'tracking_id': tracking_id,
-            'target': self.target,
+            'target': target,
             'payload': data
         })
 
