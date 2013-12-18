@@ -69,6 +69,7 @@ class WampBroadcaster(object):
         self.logger.debug('Going to send event %s on target %r' % (id, target))
 
         if not self._check_connection():
+            self.logger.warn('Dropping event %s since not connected' % id)
             return
 
         event = {
