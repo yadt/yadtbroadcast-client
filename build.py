@@ -9,7 +9,7 @@ use_plugin('python.unittest')
 
 use_plugin('copy_resources')
 
-default_task = 'publish'
+default_task = ['analyze', 'publish']
 
 name = 'yadtbroadcast-client'
 version = '1.1.4'
@@ -30,6 +30,7 @@ def set_properties(project):
     project.depends_on('Twisted')
     project.depends_on('autobahn')
 
+    project.set_property("flake8_include_test_sources", True)
     project.set_property('coverage_break_build', False)
 
     project.set_property('copy_resources_target', '$dir_dist')
