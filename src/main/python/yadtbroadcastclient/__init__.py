@@ -94,19 +94,14 @@ class WampBroadcaster(object):
             return False
         return True
 
-    # TODO: unify old and new send calls
     def publish_cmd_for_target(self, target, cmd, state, message=None, tracking_id=None):
-        if not self._check_connection():
-            return
-
-        self.client.publish(target, {
-            'type': 'event',
-            'id': 'cmd',
-            'tracking_id': tracking_id,
-            'cmd': cmd,
-            'state': state,
-            'message': message
-        })
+        self._sendEvent(id='cmd',
+                        data=None,
+                        tracking_id=tracking_id,
+                        target=target,
+                        cmd=cmd,
+                        state=state,
+                        message=message)
 
     # TODO: unify old and new send calls
     def publish_cmd(self, cmd, state, message=None, tracking_id=None):
