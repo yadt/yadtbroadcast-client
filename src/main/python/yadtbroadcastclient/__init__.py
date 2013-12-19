@@ -55,7 +55,7 @@ class WampBroadcaster(object):
         reactor.callLater(WampBroadcaster.HEARTBEAT_INTERVAL, self._heartbeat)
 
     def onEvent(self, target, event):
-        self.logger.debug('NOP - onEvent target=%s event=%s' % (target, event))
+        pass
 
     def sendFullUpdate(self, data, tracking_id=None):
         return self._sendEvent('full-update', data, tracking_id)
